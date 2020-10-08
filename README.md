@@ -14,5 +14,6 @@ Note: the simulation will be slow when you simulate very high throughput, this i
 high throughput leads to large volume of events to be simulated/processed. 
 Currently, NS-3 doesnot provide an easy way to parallelize it, 
 and there actually is not a straightforward way to make descrete event simulation scalable on supercomputer because of the high coupled events. 
+Another file transfer simulation built upon a more coarse-grained (not packet level as it in FTNetSim) network simulator is available [here](https://github.com/ramsesproject/superfacility)
 
 This work is supported by the U.S. DOE [RAMSES project](https://ramsesproject.github.io). 
