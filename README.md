@@ -1,6 +1,6 @@
 # FTNetSim
 
-This project, **FTNetSim**, is a wide area network simulator for file transfer service modeling and simulation.
+This project, **FTNetSim**, is a wide area **Net**work **Sim**ulator for **F**ile **T**ransfer service modeling and simulation.
 The network simulation is built on NS-3 V3.31.
 The default wide area network is the U.S. DOE Energy Sciences Network (https://www.es.net). 
 Users can customize their topology, by editing the wan/esnet.h.
