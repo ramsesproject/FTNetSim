@@ -1,12 +1,13 @@
 #include "FTNetSim.h"
 
 int main (int argc, char *argv[]){
+    LogComponentEnable ("GridFTPClient", LOG_LEVEL_INFO);
 
     uint32_t sysID, instIDSeq = 0;
     Time::SetResolution (Time::NS);
     Config::SetDefault("ns3::TcpSocket::SndBufSize", UintegerValue(67108864));
     Config::SetDefault("ns3::TcpSocket::RcvBufSize", UintegerValue(67108864));
-    Config::SetDefault("ns3::CsmaNetDevice::Mtu", UintegerValue(9000));
+    // Config::SetDefault("ns3::CsmaNetDevice::Mtu", UintegerValue(9000));
 
     Config::SetDefault("ns3::PointToPointNetDevice::Mtu", UintegerValue(9000));
     Config::SetDefault("ns3::BridgeNetDevice::Mtu", UintegerValue(9000));

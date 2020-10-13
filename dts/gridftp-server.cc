@@ -33,10 +33,9 @@ void GridftpServerApp::sendCallbackCtrl(Ptr<Socket> socket, uint32_t nbytes){
         n = min(clientsTable[socket].nBytes2Send, (u_int64_t)nbytes);
         socket->Send(Create<Packet>(n));
         clientsTable[socket].nBytes2Send -= n;
-        //cout << ". There are " << clientsTable[socket].nBytes2Send << " bytes need to be sent" << endl;
     }
-    cout << Simulator::Now().GetSeconds() << " sendCallbackCtrl called with nbytes = " << nbytes << " actually sent " << n << " bytes." << 
-        " There are " << clientsTable[socket].nBytes2Send << " bytes need to be sent" << endl;
+    NS_LOG_DEBUG(Simulator::Now().GetSeconds() << " sendCallbackCtrl called with nbytes = " << nbytes << " actually sent " << n << " bytes." << 
+        " There are " << clientsTable[socket].nBytes2Send << " bytes need to be sent" << endl );
 }
 
 void GridftpServerApp::sendCallbackData(Ptr<Socket> socket, uint32_t nbytes){
@@ -46,8 +45,8 @@ void GridftpServerApp::sendCallbackData(Ptr<Socket> socket, uint32_t nbytes){
         socket->Send(Create<Packet>(n));
         clientsTable[socket].nBytes2Send -= n;
     }
-    cout << Simulator::Now().GetSeconds() << " sendCallbackData called with nbytes = " << nbytes << " actually sent " << n << " bytes." << 
-        " There are " << clientsTable[socket].nBytes2Send << " bytes need to be sent" << endl;
+    NS_LOG_DEBUG( Simulator::Now().GetSeconds() << " sendCallbackData called with nbytes = " << nbytes << " actually sent " << n << " bytes." << 
+        " There are " << clientsTable[socket].nBytes2Send << " bytes need to be sent" << endl);
 }
 /*
  ***************************************************************************************************
@@ -88,12 +87,12 @@ void GridftpServerApp::handleRecvCtrl(Ptr<Socket> socket){
     if(msg == NULL){
         return;
     }
-    std::cout << Simulator::Now().GetSeconds () << " GridFTP Server for [" << srcName << " => " << dstName << "], " << 
+    NS_LOG_DEBUG(Simulator::Now().GetSeconds () << " GridFTP Server for [" << srcName << " => " << dstName << "], " << 
         id << "with IP = " << GetNode()->GetObject<Ipv4> () -> GetAddress (1, 0).GetLocal () << 
-              " received a packet with " << msg->GetSize() << " bytes " << std::endl; 
+              " received a packet with " << msg->GetSize() << " bytes " << std::endl); 
     clientsTable[socket].recvBufLen += msg->GetSize();
-    std::cout << Simulator::Now ().GetSeconds () << " There are " << clientsTable[socket].recvBufLen << " bytes received from " << 
-    clientsTable[socket].addr << " in the buffer now" << std::endl;
+    NS_LOG_DEBUG(Simulator::Now ().GetSeconds () << " There are " << clientsTable[socket].recvBufLen << " bytes received from " << 
+    clientsTable[socket].addr << " in the buffer now" << std::endl);
     GridftpServerApp::handleCtrlReq(msg, socket);
 }
 
@@ -122,9 +121,9 @@ void GridftpServerApp::handlePeerError(Ptr<Socket>){
 void GridftpServerApp::handleAcceptCtrl(Ptr<Socket> socket, const Address& from){
     InetSocketAddress iaddr = InetSocketAddress::ConvertFrom (from);
     // initialize a new client instance
-    std::cout << Simulator::Now().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
+    NS_LOG_DEBUG(Simulator::Now().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
               " ctrl channel accepted a new connection from " << 
-              iaddr.GetIpv4 () << ":" << iaddr.GetPort () << std::endl;
+              iaddr.GetIpv4 () << ":" << iaddr.GetPort () << std::endl);
 
     gridftpClientInfo client;
     client.socket = socket;
@@ -143,8 +142,8 @@ void GridftpServerApp::handleAcceptCtrl(Ptr<Socket> socket, const Address& from)
 // data channel 
 void GridftpServerApp::handleAcceptData(Ptr<Socket> socket, const Address& from){
     InetSocketAddress iaddr = InetSocketAddress::ConvertFrom (from);
-    std::cout << Simulator::Now().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
-              " data channel accepted a new connection from " << iaddr.GetIpv4 () << ":" << iaddr.GetPort () << std::endl;
+    NS_LOG_DEBUG(Simulator::Now().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
+              " data channel accepted a new connection from " << iaddr.GetIpv4 () << ":" << iaddr.GetPort () << std::endl);
     // initialize a new client instance
     gridftpClientInfo client;
     client.socket = socket;
@@ -176,9 +175,9 @@ Time GridftpServerApp::serviceTime(){
  ***************************************************************************************************
  */
 void GridftpServerApp::StartApplication(){
-    std::cout << Simulator::Now().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
+    NS_LOG_DEBUG(Simulator::Now().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
               " started, my Ipv4Address: " << GetNode()->GetObject<Ipv4> () -> GetAddress (1, 0).GetLocal () 
-             << ". ctrl channel is listening on " << ctrlPort << ", data channel is listening on " << dataPort << std::endl; 
+              << ". ctrl channel is listening on " << ctrlPort << ", data channel is listening on " << dataPort << std::endl); 
     listenCtrlSocket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId ());
     listenCtrlSocket->Bind(InetSocketAddress(Ipv4Address::GetAny(), ctrlPort));
     listenCtrlSocket->Listen();
@@ -198,7 +197,6 @@ void GridftpServerApp::StartApplication(){
  ***************************************************************************************************
  */
 void GridftpServerApp::StopApplication(){
-    std::cout << Simulator::Now ().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
-              " stopped" << std::endl; 
-    //NS_LOG_UNCOND ("DTN: " << id << " stopped");
+    NS_LOG_DEBUG(Simulator::Now ().GetSeconds() << " GridFTP Server for [" << srcName << " => " << dstName << "], " << id << 
+              " stopped" << std::endl); 
 }

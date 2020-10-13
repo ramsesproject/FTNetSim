@@ -1,4 +1,8 @@
 #include "gridftp-client.h"
+namespace ns3 {
+  NS_LOG_COMPONENT_DEFINE ("GridFTPClient");
+}
+using namespace ns3;
 /*
  ***************************************************************************************************
  * func   name: 
@@ -38,10 +42,10 @@ void GridftpClientApp::handleCtrlRecv(Ptr<Socket> socket){
     Address addr;
     socket->GetPeerName (addr);
     InetSocketAddress iaddr = InetSocketAddress::ConvertFrom (addr);
-    std::cout << Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], with IP = " << 
+    NS_LOG_DEBUG( Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], with IP = " << 
               GetNode()->GetObject<Ipv4> () -> GetAddress (1, 0).GetLocal () << 
               " received a packet with " << msg->GetSize() << " bytes from Ctrl Channel " << iaddr.GetIpv4 () << ":" << 
-              iaddr.GetPort () << std::endl; 
+              iaddr.GetPort () << std::endl); 
 }
 
 void GridftpClientApp::handleDataRecv(Ptr<Socket> socket){
@@ -53,8 +57,8 @@ void GridftpClientApp::handleDataRecv(Ptr<Socket> socket){
     Address addr;
     socket->GetPeerName (addr);
     InetSocketAddress iaddr = InetSocketAddress::ConvertFrom (addr);
-    std::cout << Simulator::Now ().GetSeconds () << " Client with IP = " << GetNode()->GetObject<Ipv4> () -> GetAddress (1, 0).GetLocal () << 
-              " received a packet with " << msg->GetSize() << " bytes from Data Channel " << iaddr.GetIpv4 () << ":" << iaddr.GetPort () << std::endl; 
+    NS_LOG_DEBUG( Simulator::Now ().GetSeconds () << " Client with IP = " << GetNode()->GetObject<Ipv4> () -> GetAddress (1, 0).GetLocal () << 
+              " received a packet with " << msg->GetSize() << " bytes from Data Channel " << iaddr.GetIpv4 () << ":" << iaddr.GetPort () << std::endl); 
     workerDataRecv[socket].recv_byte += msg->GetSize();
 }
  /*
@@ -67,8 +71,8 @@ void GridftpClientApp::handleDataRecv(Ptr<Socket> socket){
  ***************************************************************************************************
  */
 void GridftpClientApp::StartApplication(){
-    std::cout << Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << id <<
-    " started, my Ipv4Address: " << GetNode()->GetObject<Ipv4> () -> GetAddress (1, 0).GetLocal () << std::endl;
+    NS_LOG_DEBUG( Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << id <<
+    " started, my Ipv4Address: " << GetNode()->GetObject<Ipv4> () -> GetAddress (1, 0).GetLocal () << std::endl);
     ctrlSocket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId ());
     ctrlSocket->SetRecvCallback(MakeCallback(&GridftpClientApp::handleCtrlRecv, this));
     ctrlSocket->Bind();
@@ -76,8 +80,8 @@ void GridftpClientApp::StartApplication(){
     //ctrlSocket->SetCloseCallbacks(MakeCallback(&GridftpClientApp::handlePeerClose, this), MakeCallback(&GridftpClientApp::handlePeerError, this));
     // set up data channel TCP connection
     for(int i=0; i<nTCPStream; i++){
-        std::cout << Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << id << 
-        " try to connect to " << serverAddr << ":" << dataPort << std::endl;
+        NS_LOG_DEBUG( Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << id << 
+        " try to connect to " << serverAddr << ":" << dataPort << std::endl);
         Ptr<Socket> socket = Socket::CreateSocket(GetNode(), TcpSocketFactory::GetTypeId ());
         socket->SetRecvCallback(MakeCallback(&GridftpClientApp::handleDataRecv, this));
         socket->Bind();
@@ -105,10 +109,11 @@ void GridftpClientApp::clearRecvBuffer(){
 
 
 void GridftpClientApp::periodic1Sec(uint64_t last_nbytes){
+    NS_LOG_FUNCTION (this << last_nbytes);
     uint64_t sum_now = sumRecvBytes();
     uint64_t diff    = sum_now - last_nbytes;
-    std::cout << Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << 
-    id << ": transfer rate: " << 8.0 * diff / (1<<30) << " Gbps" << std::endl;
+    NS_LOG_INFO( Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << 
+    id << ": transfer rate: " << 8.0 * diff / (1<<30) << " Gbps" << std::endl);
     Simulator::Schedule (Seconds(1) , &GridftpClientApp::periodic1Sec, this, sum_now);
 }
 
@@ -122,8 +127,8 @@ void GridftpClientApp::periodic1Sec(uint64_t last_nbytes){
  ***************************************************************************************************
  */
 void GridftpClientApp::StopApplication(){
-    std::cout << Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << id 
+    NS_LOG_DEBUG(Simulator::Now ().GetSeconds () << " GridFTP Client for [" << srcName << " => " << dstName << "], " << id 
     << " stopped, data channel received " << (double)sumRecvBytes()/(1<<30) << " GiB "
-    << 8.0*sumRecvBytes() / Simulator::Now().GetSeconds() / (1<<30) << "Gbps" << std::endl;  
+    << 8.0*sumRecvBytes() / Simulator::Now().GetSeconds() / (1<<30) << "Gbps" << std::endl);  
     //NS_LOG_UNCOND ("DTN: " << id << " stopped");
 }
