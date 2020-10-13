@@ -1,4 +1,8 @@
 #include "gridftp-server.h"
+namespace ns3 {
+  NS_LOG_COMPONENT_DEFINE ("GridFTPServer");
+}
+
 /*
  ***************************************************************************************************
  * description: initialize metadetaserver instance

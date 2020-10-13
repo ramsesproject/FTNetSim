@@ -2,7 +2,7 @@
 namespace ns3 {
   NS_LOG_COMPONENT_DEFINE ("GridFTPClient");
 }
-using namespace ns3;
+
 /*
  ***************************************************************************************************
  * func   name: 

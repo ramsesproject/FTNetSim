@@ -1,7 +1,8 @@
 #include "FTNetSim.h"
 
 int main (int argc, char *argv[]){
-    LogComponentEnable ("GridFTPClient", LOG_LEVEL_INFO);
+    LogComponentEnable ("GridFTPClient", LOG_LEVEL_INFO); 
+    LogComponentEnable ("GridFTPServer", LOG_LEVEL_INFO);
 
     uint32_t sysID, instIDSeq = 0;
     Time::SetResolution (Time::NS);
